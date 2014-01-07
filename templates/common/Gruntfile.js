@@ -15,6 +15,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  var ENV = {};
+
   // Define the configuration for all the tasks
   grunt.initConfig({
 
@@ -24,6 +26,7 @@ module.exports = function (grunt) {
       app: require('./bower.json').appPath || 'app',
       dist: 'build'
     },
+    ENV: ENV,
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {<% if (coffee) { %>
@@ -394,11 +397,22 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       }
+    },
+
+    ngconstant: {
+      configuration: {
+        dest: '<%= yeoman.app %>/scripts/configuration.js',
+        name: 'configuration',
+        constants: {
+          ENV: '<%= ENV.env || "production" %>'
+        }
+      },
     }
   });
 
 
   grunt.registerTask('serve', function (target) {
+    target = target || 'development';
     if (target === 'dist') {
       return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
@@ -406,6 +420,8 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'bower-install',
+      'ENV:' + target,
+      'ngconstant:configuration',
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
@@ -420,6 +436,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
+    'ENV:test',
+    'ngconstant:configuration',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
@@ -429,6 +447,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'bower-install',
+    'ngconstant:configuration',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
@@ -442,6 +461,10 @@ module.exports = function (grunt) {
     'usemin',
     'htmlmin'
   ]);
+
+  grunt.registerTask('ENV', function(env) {
+    ENV.env = env;
+  });
 
   grunt.registerTask('default', [
     'newer:jshint',

@@ -15,7 +15,15 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  var aws = {
+    key: grunt.option('key') || process.env.AWS_ACCESS_KEY_ID,
+    secret: grunt.option('secret') || process.env.AWS_SECRET_ACCESS_KEY
+  };
   var ENV = {};
+  var isGitTag = function(err, stdout, stderr, cb) {
+    isGitTag = !err;
+    cb();
+  };
 
   // Define the configuration for all the tasks
   grunt.initConfig({
@@ -26,6 +34,11 @@ module.exports = function (grunt) {
       app: require('./bower.json').appPath || 'app',
       dist: 'build'
     },
+    deploy: {
+      staging: 'staging.app.com',
+      production: 'app.com'
+    },
+    aws: aws,
     ENV: ENV,
 
     // Watches files for changes and runs tasks based on the changed files
@@ -406,7 +419,47 @@ module.exports = function (grunt) {
         constants: {
           ENV: '<%= ENV.env || "production" %>'
         }
+      }
+    },
+
+    s3: {
+      options: {
+        key: '<%= aws.key %>',
+        secret: '<%= aws.secret %>',
+        access: 'public-read',
+        maxOperations: 20
       },
+      staging: {
+        options: {
+          bucket: '<%= deploy.staging %>',
+          verify: true
+        },
+        sync: [{
+          src: 'build/**/*.*',
+          dest: '/',
+          rel: 'build'
+        }]
+      },
+      production: {
+        options: {
+          bucket: '<%= deploy.production %>',
+          verify: true
+        },
+        sync: [{
+          src: 'build/**/*.*',
+          dest: '/',
+          rel: 'build'
+        }]
+      }
+    },
+
+    shell: {
+      isGitTag: {
+        command: 'git describe --exact-match --tags HEAD',
+        options: {
+          callback: isGitTag
+        }
+      }
     }
   });
 
@@ -464,6 +517,36 @@ module.exports = function (grunt) {
 
   grunt.registerTask('ENV', function(env) {
     ENV.env = env;
+  });
+
+  grunt.registerTask('deploy', function(env) {
+    var repo = process.env.TRAVIS_REPO_SLUG;
+    var branch = process.env.TRAVIS_BRANCH;
+    // Will set `isGitTag` to either true or false.
+    grunt.task.run('shell:isGitTag');
+
+    // TRAVIS_REPO_SLUG must be our repo.
+    // Prevents others from deploying code on PRs
+    if (repo && repo !== 'cloudspace/repo') {
+      console.log('not deploying because repo slug does not match repo\'s');
+      return;
+    }
+    // TRAVIS_BRANCH can be either "master" or "vX.Y.Z" (a git tag)
+    if (branch && (branch !== 'master' || !isGitTag)) {
+      console.log('not deploying because branch is not master');
+      return;
+    }
+
+    if (!aws.key) {
+      throw new Error('You must specify a `AWS_ACCESS_KEY_ID` ENV variable.');
+    }
+    if (!aws.secret) {
+      throw new Error('You must specify a `AWS_SECRET_ACCESS_KEY` ENV variable.');
+    }
+
+    env = env || ((isGitTag) ? 'production' : 'staging');
+
+    grunt.task.run(['ENV:' + env, 'build', 's3:' + env]);
   });
 
   grunt.registerTask('default', [

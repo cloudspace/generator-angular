@@ -414,24 +414,24 @@ module.exports = function (grunt) {
 
     ngconstant: {
       configuration: {
-        dest: '<%= yeoman.app %>/scripts/configuration.js',
+        dest: '<%%= yeoman.app %>/scripts/configuration.js',
         name: 'configuration',
         constants: {
-          ENV: '<%= ENV.env || "production" %>'
+          ENV: '<%%= ENV.env || "production" %>'
         }
       }
     },
 
     s3: {
       options: {
-        key: '<%= aws.key %>',
-        secret: '<%= aws.secret %>',
+        key: '<%%= aws.key %>',
+        secret: '<%%= aws.secret %>',
         access: 'public-read',
         maxOperations: 20
       },
       staging: {
         options: {
-          bucket: '<%= deploy.staging %>',
+          bucket: '<%%= deploy.staging %>',
           verify: true
         },
         sync: [{
@@ -442,7 +442,7 @@ module.exports = function (grunt) {
       },
       production: {
         options: {
-          bucket: '<%= deploy.production %>',
+          bucket: '<%%= deploy.production %>',
           verify: true
         },
         sync: [{

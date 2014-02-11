@@ -7,7 +7,7 @@
 
 Install `generator-angular`:
 ```
-npm install -g generator-angular
+npm install -g git://github.com/cloudspace/generator-angular.git
 ```
 
 Make a new directory, and `cd` into it:
@@ -21,6 +21,12 @@ yo angular [app-name]
 ```
 
 Run `grunt` for building and `grunt serve` for preview
+
+To deploy using Travis-CI, add the required ENV vars:
+```
+gem install travis
+travis encrypt AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... -x --add env
+```
 
 
 ## Generators

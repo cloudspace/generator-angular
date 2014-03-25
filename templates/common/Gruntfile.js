@@ -42,7 +42,11 @@ module.exports = function (grunt) {
     ENV: ENV,
 
     // Watches files for changes and runs tasks based on the changed files
-    watch: {<% if (coffee) { %>
+    watch: {
+      bower: {
+        files: ['bower.json'],
+        tasks: ['bowerInstall']
+      },<% if (coffee) { %>
       coffee: {
         files: ['<%%= yeoman.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}'],
         tasks: ['newer:coffee:dist']
@@ -169,14 +173,17 @@ module.exports = function (grunt) {
     },
 
     // Automatically inject Bower components into the app
-    'bower-install': {
+    bowerInstall: {
       app: {
-        html: '<%%= yeoman.app %>/index.html',
+        src: ['<%%= yeoman.app %>/index.html'],
         ignorePath: '<%%= yeoman.app %>/'
-      }
-    },
+      }<% if (compass) { %>,
+      sass: {
+        src: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        ignorePath: '<%%= yeoman.app %>/bower_components/'
+      }<% } %>
+    },<% if (coffee) { %>
 
-<% if (coffee) { %>
     // Compiles CoffeeScript to JavaScript
     coffee: {
       options: {
@@ -201,9 +208,8 @@ module.exports = function (grunt) {
           ext: '.js'
         }]
       }
-    },<% } %>
+    },<% } %><% if (compass) { %>
 
-<% if (compass) { %>
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
@@ -281,6 +287,7 @@ module.exports = function (grunt) {
         root: '<%%= yeoman.app %>'
       }
     },
+
     imagemin: {
       dist: {
         files: [{
@@ -291,6 +298,7 @@ module.exports = function (grunt) {
         }]
       }
     },
+
     svgmin: {
       dist: {
         files: [{
@@ -301,6 +309,7 @@ module.exports = function (grunt) {
         }]
       }
     },
+
     htmlmin: {
       dist: {
         options: {

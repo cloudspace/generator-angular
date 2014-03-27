@@ -275,7 +275,7 @@ Generator.prototype._injectDependencies = function _injectDependencies() {
     console.log(howToInstall);
   } else {
     wiredep({
-      directory: 'app/bower_components',
+      directory: 'app/vendor',
       bowerJson: JSON.parse(fs.readFileSync('./bower.json')),
       ignorePath: 'app/',
       src: 'app/index.html',

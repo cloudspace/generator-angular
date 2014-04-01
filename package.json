@@ -13,7 +13,10 @@
   ],
   "author": "The Yeoman Team",
   "main": "app/index.js",
-  "repository": "cloudspace/generator-angular",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudspace/generator-angular.git"
+  },
   "scripts": {
     "test": "mocha"
   },

@@ -121,6 +121,11 @@ Generator.prototype.welcome = function welcome() {
 };
 
 Generator.prototype.askForCompass = function askForCompass() {
+  if (this.options.hasOwnProperty('compass')) {
+    this.compass = this.options['compass'];
+    return;
+  }
+
   var cb = this.async();
 
   this.prompt([{
@@ -137,6 +142,15 @@ Generator.prototype.askForCompass = function askForCompass() {
 
 Generator.prototype.askForBootstrap = function askForBootstrap() {
   var compass = this.compass;
+
+  if (this.options.hasOwnProperty('bootstrap')) {
+    this.bootstrap = this.options.bootstrap;
+    if (this.options.hasOwnProperty('compassBootstrap')) {
+      this.compassBootstrap = compass && this.bootstrap && this.options['compassBootstrap'];
+    }
+    return;
+  }
+
   var cb = this.async();
 
   this.prompt([{
@@ -162,31 +176,7 @@ Generator.prototype.askForBootstrap = function askForBootstrap() {
 
 Generator.prototype.askForModules = function askForModules() {
   var cb = this.async();
-
-  var prompts = [{
-    type: 'checkbox',
-    name: 'modules',
-    message: 'Which modules would you like to include?',
-    choices: [{
-      value: 'resourceModule',
-      name: 'angular-resource.js',
-      checked: true
-    }, {
-      value: 'cookiesModule',
-      name: 'angular-cookies.js',
-      checked: true
-    }, {
-      value: 'sanitizeModule',
-      name: 'angular-sanitize.js',
-      checked: true
-    }, {
-      value: 'routeModule',
-      name: 'angular-route.js',
-      checked: true
-    }]
-  }];
-
-  this.prompt(prompts, function (props) {
+  var promptCallback = function(props) {
     var hasMod = function (mod) { return props.modules.indexOf(mod) !== -1; };
     this.resourceModule = hasMod('resourceModule');
     this.cookiesModule = hasMod('cookiesModule');
@@ -215,7 +205,37 @@ Generator.prototype.askForModules = function askForModules() {
     }
 
     cb();
-  }.bind(this));
+  }.bind(this);
+
+  if (this.options.hasOwnProperty('modules')) {
+    promptCallback(this.options['modules'].match(/\w+/g));
+    return;
+  }
+
+  var prompts = [{
+    type: 'checkbox',
+    name: 'modules',
+    message: 'Which modules would you like to include?',
+    choices: [{
+      value: 'resourceModule',
+      name: 'angular-resource.js',
+      checked: true
+    }, {
+      value: 'cookiesModule',
+      name: 'angular-cookies.js',
+      checked: true
+    }, {
+      value: 'sanitizeModule',
+      name: 'angular-sanitize.js',
+      checked: true
+    }, {
+      value: 'routeModule',
+      name: 'angular-route.js',
+      checked: true
+    }]
+  }];
+
+  this.prompt(prompts, promptCallback);
 };
 
 Generator.prototype.readIndex = function readIndex() {

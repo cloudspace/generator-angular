@@ -13,7 +13,7 @@
   ],
   "author": "The Yeoman Team",
   "main": "app/index.js",
-  "repository": "yeoman/generator-angular",
+  "repository": "cloudspace/generator-angular",
   "scripts": {
     "test": "mocha"
   },

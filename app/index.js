@@ -208,7 +208,7 @@ Generator.prototype.askForModules = function askForModules() {
   }.bind(this);
 
   if (this.options.hasOwnProperty('modules')) {
-    promptCallback(this.options['modules'].match(/\w+/g));
+    promptCallback({ modules: this.options['modules'].match(/\w+/g) });
     return;
   }
 

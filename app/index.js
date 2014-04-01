@@ -122,7 +122,7 @@ Generator.prototype.welcome = function welcome() {
 
 Generator.prototype.askForCompass = function askForCompass() {
   if (this.options.hasOwnProperty('compass')) {
-    this.compass = this.options['compass'];
+    this.compass = this.options.compass;
     return;
   }
 
@@ -146,7 +146,7 @@ Generator.prototype.askForBootstrap = function askForBootstrap() {
   if (this.options.hasOwnProperty('bootstrap')) {
     this.bootstrap = this.options.bootstrap;
     if (this.options.hasOwnProperty('compassBootstrap')) {
-      this.compassBootstrap = compass && this.bootstrap && this.options['compassBootstrap'];
+      this.compassBootstrap = compass && this.bootstrap && this.options.compassBootstrap;
     }
     return;
   }
@@ -208,7 +208,7 @@ Generator.prototype.askForModules = function askForModules() {
   }.bind(this);
 
   if (this.options.hasOwnProperty('modules')) {
-    promptCallback({ modules: this.options['modules'].match(/\w+/g) });
+    promptCallback({ modules: this.options.modules.match(/\w+/g) });
     return;
   }
 

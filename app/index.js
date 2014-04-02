@@ -6,6 +6,7 @@ var angularUtils = require('../util.js');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var wiredep = require('wiredep');
+var nopt = require('nopt');
 
 
 var Generator = module.exports = function Generator(args, options) {
@@ -19,6 +20,20 @@ var Generator = module.exports = function Generator(args, options) {
     type: String,
     required: 'false'
   });
+  this.option('modules', {
+    desc: 'The modules to be included in the Angular app',
+    type: String,
+    required: 'false',
+    defaults: ''
+  });
+
+  this._.extend(this.options, nopt(this._.reduce(this._options, function(memo, option) {
+    memo[option.name] = option.type;
+    return memo;
+  }, {})));
+  args = this.options.argv.remain;
+  args.shift();
+
   this.scriptAppName = this.appname + angularUtils.appName(this);
 
   args = ['main'];
@@ -207,7 +222,7 @@ Generator.prototype.askForModules = function askForModules() {
     cb();
   }.bind(this);
 
-  if (this.options.hasOwnProperty('modules')) {
+  if (this.options.modules !== '') {
     promptCallback({ modules: this.options.modules.match(/\w+/g) });
     return;
   }

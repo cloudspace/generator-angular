@@ -31,7 +31,8 @@ var Generator = module.exports = function Generator(args, options) {
     memo[option.name] = option.type;
     return memo;
   }, {})));
-  args = this.options.argv.remain;
+
+  this.args = args = this.options.argv.remain;
   args.shift();
 
   this.scriptAppName = this.appname + angularUtils.appName(this);

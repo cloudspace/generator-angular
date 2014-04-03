@@ -24,7 +24,7 @@ var Generator = module.exports = function Generator(args, options) {
     desc: 'The modules to be included in the Angular app',
     type: String,
     required: 'false',
-    defaults: ''
+    defaults: null
   });
 
   this._.extend(this.options, nopt(this._.reduce(this._options, function(memo, option) {
@@ -222,7 +222,7 @@ Generator.prototype.askForModules = function askForModules() {
     cb();
   }.bind(this);
 
-  if (this.options.modules !== '') {
+  if (this.options.modules !== null) {
     promptCallback({ modules: this.options.modules.match(/\w+/g) });
     return;
   }

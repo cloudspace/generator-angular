@@ -26,6 +26,17 @@ var Generator = module.exports = function Generator(args, options) {
     required: 'false',
     defaults: null
   });
+  this.option('useFacebook');
+  this.option('useGoogle');
+  this.option('useTwitter');
+  this.option('useGithub');
+  this.option('useLinkedIn');
+
+  this.useFacebook = this.options.useFacebook;
+  this.useTwitter = this.options.useTwitter;
+  this.useGoogle = this.options.useGoogle;
+  this.useGithub = this.options.useGithub;
+  this.useLinkedIn = this.options.useLinkedIn;
 
   this._.extend(this.options, nopt(this._.reduce(this._options, function(memo, option) {
     memo[option.name] = option.type;
@@ -64,7 +75,16 @@ var Generator = module.exports = function Generator(args, options) {
   }
 
   this.hookFor('angular:common', {
-    args: args
+    args: args,
+    options: {
+      options: {
+        useFacebook: this.useFacebook,
+        useTwitter: this.useTwitter,
+        useGoogle: this.useGoogle,
+        useGithub: this.useGithub,
+        useLinkedIn: this.useLinkedIn
+      }
+    }
   });
 
   this.hookFor('angular:main', {

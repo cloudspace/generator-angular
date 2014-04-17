@@ -3,6 +3,11 @@
     <li class="active"><a ng-href="#">Home</a></li>
     <li><a ng-href="#">About</a></li>
     <li><a ng-href="#">Contact</a></li>
+    <% if (options.useFacebook) { %><li><a ng-href="/auth/facebook">Facebook</a></li><% } %>
+    <% if (options.useTwitter) { %><li><a ng-href="/auth/twitter">Twitter</a></li><% } %>
+    <% if (options.useGoogle) { %><li><a ng-href="/auth/google">Google</a></li><% } %>
+    <% if (options.useGithub) { %><li><a ng-href="/auth/github">Github</a></li><% } %>
+    <% if (options.useLinkedIn) { %><li><a ng-href="/auth/linkedin">LinkedIn</a></li><% } %>
   </ul>
   <h3 class="text-muted"><%= appname %></h3>
 </div>

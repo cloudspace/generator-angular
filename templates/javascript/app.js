@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-  .module('<%= scriptAppName %>', [<%= angularModules %>])<% if (ngRoute) { %>
+  .module('<%= scriptAppName %>', ['OAuth2'<% if(angularModules) { %>, <%= angularModules %><% } %>])<% if (ngRoute) { %>
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
